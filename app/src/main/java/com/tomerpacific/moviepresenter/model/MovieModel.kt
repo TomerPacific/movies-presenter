@@ -1,10 +1,17 @@
 package com.tomerpacific.moviepresenter.model
 
+import android.graphics.Bitmap
+import org.json.JSONArray
+
 data class MovieModel(
-    val title: String,
-    val yearOfRelease: String,
-    val rating: Double,
-    val duration: String,
-    val certification: Char,
-    val description: String
+    val isAdultMovie: Boolean,
+    val genreIds: JSONArray,
+    val id: Int,
+    val originalLanguage: String,
+    val originalTitle: String,
+    val overview: String,
+    val popularityScore: Double,
+    val posterImagePath: String,
+    val releaseData: String,
+    var posterImgBitmap: Bitmap?
 )
