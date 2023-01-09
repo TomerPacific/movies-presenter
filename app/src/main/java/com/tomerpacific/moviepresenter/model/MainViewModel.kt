@@ -20,7 +20,7 @@ import java.net.URL
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
     val moviesList: MutableState<List<MovieModel>> = mutableStateOf(listOf())
-    var allMoviesComplete: MutableState<Boolean> = mutableStateOf(false)
+    var inLoadingState: MutableState<Boolean> = mutableStateOf(true)
 
     init {
         viewModelScope.launch {
@@ -89,7 +89,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                 }
                 job.join()
                 moviesList.value = movies
-                allMoviesComplete.value = true
+                inLoadingState.value = false
             }
         }
     }
