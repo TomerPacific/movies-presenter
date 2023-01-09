@@ -51,13 +51,10 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MoviesList() {
         val movies = viewModel.moviesList.value
-        val didFinishWork = viewModel.allMoviesComplete.value
+        val isLoading = viewModel.inLoadingState.value
         Box(modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            if (!didFinishWork) {
-                ProgressBarIndicator()
-            } else {
                 LazyColumn(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -90,15 +87,7 @@ class MainActivity : ComponentActivity() {
                         }
                     }
                 }
+                CircularProgressBarIndicator(isLoading)
             }
         }
-    }
-
-    @Composable
-    private fun ProgressBarIndicator() {
-        Box(modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
-    }
 }
