@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tomerpacific.moviepresenter.model.MainViewModel
 import com.tomerpacific.moviepresenter.ui.theme.MoviePresenterTheme
+import com.tomerpacific.moviepresenter.ui.view.CircularProgressBarIndicator
+import com.tomerpacific.moviepresenter.ui.view.MovieCard
 
 class MainActivity : ComponentActivity() {
 
@@ -59,32 +61,7 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     items(movies) { movie ->
-                        Card(
-                            border = BorderStroke(2.dp, Color.Cyan),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 5.dp)
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            )
-                            {
-                                Text(
-                                    modifier = Modifier.padding(5.dp),
-                                    text = movie.originalTitle,
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                movie.posterImgBitmap?.let {
-                                    Image(
-                                        bitmap = it.asImageBitmap(),
-                                        contentDescription = movie.originalTitle
-                                    )
-                                }
-
-                            }
-                        }
+                       MovieCard(movie)
                     }
                 }
                 CircularProgressBarIndicator(isLoading)
