@@ -20,6 +20,7 @@ import java.net.URL
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
     val moviesList: MutableState<List<MovieModel>> = mutableStateOf(listOf())
+    var allMoviesComplete: MutableState<Boolean> = mutableStateOf(false)
 
     init {
         viewModelScope.launch {
@@ -39,8 +40,8 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                                 data.getInt("page"),
                                 data.getJSONArray("results")
                             )
-                            convertResponseToModel(response)
-                            fetchMoviePosters()
+                            val movies = convertResponseToModel(response)
+                            fetchMoviePosters(movies)
                         }
                     }
                 }
@@ -48,7 +49,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    private fun convertResponseToModel(response: TMDBResponse) {
+    private fun convertResponseToModel(response: TMDBResponse): MutableList<MovieModel> {
 
         val movies: MutableList<MovieModel> = mutableListOf()
 
@@ -70,15 +71,14 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             movies.add(movieModel)
         }
 
-        moviesList.value = movies
+        return movies
     }
 
-    private fun fetchMoviePosters() {
-        val movies = moviesList.value
+    private fun fetchMoviePosters(movies: MutableList<MovieModel>) {
         for (movie in movies) {
             viewModelScope.launch {
                 val posterUrl = movie.posterImagePath
-                launch(Dispatchers.IO) {
+                val job = launch(Dispatchers.IO) {
                     val url = URL(Constants.MOVIE_POSTER_ENDPOINT + posterUrl)
                     with(url.openConnection() as HttpURLConnection) {
                         requestMethod = "GET"
@@ -87,8 +87,10 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                         movie.posterImgBitmap = img
                     }
                 }
+                job.join()
+                moviesList.value = movies
+                allMoviesComplete.value = true
             }
         }
-        moviesList.value = movies
     }
 }
