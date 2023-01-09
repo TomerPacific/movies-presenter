@@ -9,10 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +39,7 @@ class MainActivity : ComponentActivity() {
                         Row ( Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            Text(text = "Movie Presenter", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                            Text(text = Constants.APP_TITLE, fontSize = 30.sp, fontWeight = FontWeight.Bold)
                         }
                         MoviesList()
                     }
@@ -54,28 +51,54 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MoviesList() {
         val movies = viewModel.moviesList.value
-
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally
+        val didFinishWork = viewModel.allMoviesComplete.value
+        Box(modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            items(movies) { movie ->
-                Card(
-                    border = BorderStroke(2.dp, Color.Cyan),
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp)
+            if (!didFinishWork) {
+                ProgressBarIndicator()
+            } else {
+                LazyColumn(
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    )
-                    {
-                        Text(modifier = Modifier.padding(5.dp),
-                            text = movie.originalTitle, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                        movie.posterImgBitmap?.let {
-                            Image(bitmap = it.asImageBitmap(), contentDescription = "Movie Poster")
-                        }
+                    items(movies) { movie ->
+                        Card(
+                            border = BorderStroke(2.dp, Color.Cyan),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 5.dp)
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            )
+                            {
+                                Text(
+                                    modifier = Modifier.padding(5.dp),
+                                    text = movie.originalTitle,
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                movie.posterImgBitmap?.let {
+                                    Image(
+                                        bitmap = it.asImageBitmap(),
+                                        contentDescription = movie.originalTitle
+                                    )
+                                }
 
+                            }
+                        }
                     }
                 }
             }
+        }
+    }
+
+    @Composable
+    private fun ProgressBarIndicator() {
+        Box(modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
         }
     }
 }
