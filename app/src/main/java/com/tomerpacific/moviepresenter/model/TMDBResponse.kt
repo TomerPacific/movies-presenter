@@ -1,8 +1,11 @@
 package com.tomerpacific.moviepresenter.model
 
-import org.json.JSONArray
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class TMDBResponse(
-    val pageNumber: Int,
-    val results: JSONArray
+    val page: Int,
+    val results: List<MovieModel>,
+    val total_pages: Int,
+    val total_results: Int
 )
