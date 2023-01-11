@@ -33,14 +33,14 @@ fun MovieCard(movie: MovieModel) {
         {
             Text(
                 modifier = Modifier.padding(5.dp),
-                text = movie.originalTitle,
+                text = movie.original_title,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
             movie.posterImgBitmap?.let {
                 Image(
                     bitmap = it.asImageBitmap(),
-                    contentDescription = movie.originalTitle
+                    contentDescription = movie.original_title
                 )
             }
 
