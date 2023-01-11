@@ -11,8 +11,7 @@ import androidx.lifecycle.viewModelScope
 import com.tomerpacific.moviepresenter.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONArray
-import org.json.JSONObject
+import kotlinx.serialization.json.Json.Default.decodeFromString
 import java.io.BufferedInputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -35,13 +34,8 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
                     inputStream.bufferedReader().use {
                         it.lines().forEach { line ->
-                            val data = JSONObject(line)
-                            val response = TMDBResponse(
-                                data.getInt("page"),
-                                data.getJSONArray("results")
-                            )
-                            val movies = convertResponseToModel(response)
-                            fetchMoviePosters(movies)
+                            val response: TMDBResponse = decodeFromString(TMDBResponse.serializer(), line)
+                            fetchMoviePosters(response)
                         }
                     }
                 }
@@ -49,35 +43,11 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    private fun convertResponseToModel(response: TMDBResponse): MutableList<MovieModel> {
 
-        val movies: MutableList<MovieModel> = mutableListOf()
-
-        val moviesData: JSONArray = response.results
-        for (index in 0 until moviesData.length()) {
-            val movie: JSONObject = moviesData.getJSONObject(index)
-            val movieModel = MovieModel(
-                movie.getBoolean("adult"),
-                movie.getJSONArray("genre_ids"),
-                movie.getInt("id"),
-                movie.getString("original_language"),
-                movie.getString("original_title"),
-                movie.getString("overview"),
-                movie.getDouble("popularity"),
-                movie.getString("poster_path"),
-                movie.getString("release_date"),
-                null
-            )
-            movies.add(movieModel)
-        }
-
-        return movies
-    }
-
-    private fun fetchMoviePosters(movies: MutableList<MovieModel>) {
-        for (movie in movies) {
+    private fun fetchMoviePosters(response: TMDBResponse) {
+        for (movie in response.results) {
             viewModelScope.launch {
-                val posterUrl = movie.posterImagePath
+                val posterUrl = movie.poster_path
                 val job = launch(Dispatchers.IO) {
                     val url = URL(Constants.MOVIE_POSTER_ENDPOINT + posterUrl)
                     with(url.openConnection() as HttpURLConnection) {
@@ -88,7 +58,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                     }
                 }
                 job.join()
-                moviesList.value = movies
+                moviesList.value = response.results
                 inLoadingState.value = false
             }
         }
