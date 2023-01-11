@@ -1,17 +1,24 @@
 package com.tomerpacific.moviepresenter.model
 
 import android.graphics.Bitmap
-import org.json.JSONArray
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
+@Serializable
 data class MovieModel(
-    val isAdultMovie: Boolean,
-    val genreIds: JSONArray,
+    val adult: Boolean,
+    val backdrop_path: String,
+    val genre_ids: List<Int>,
     val id: Int,
-    val originalLanguage: String,
-    val originalTitle: String,
+    val original_language: String,
+    val original_title: String,
     val overview: String,
-    val popularityScore: Double,
-    val posterImagePath: String,
-    val releaseData: String,
-    var posterImgBitmap: Bitmap?
+    val popularity: Double,
+    val poster_path: String,
+    val release_date: String,
+    val title: String,
+    val video: Boolean,
+    val vote_average: Double,
+    val vote_count: Int,
+    @Transient var posterImgBitmap: Bitmap? = null
 )
