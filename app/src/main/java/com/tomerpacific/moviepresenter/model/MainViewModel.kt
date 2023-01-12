@@ -21,6 +21,8 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     val moviesList: MutableState<List<MovieModel>> = mutableStateOf(listOf())
     var inLoadingState: MutableState<Boolean> = mutableStateOf(true)
 
+    var movieItemPressed: MovieModel? = null
+
     init {
         viewModelScope.launch {
             val ai: ApplicationInfo = application.packageManager
