@@ -51,12 +51,28 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             viewModelScope.launch {
                 val posterUrl = movie.poster_path
                 val job = launch(Dispatchers.IO) {
-                    val url = URL(Constants.MOVIE_POSTER_ENDPOINT + posterUrl)
-                    with(url.openConnection() as HttpURLConnection) {
-                        requestMethod = "GET"
-                        val bufferedInputStream = BufferedInputStream(inputStream)
-                        val img = BitmapFactory.decodeStream(bufferedInputStream)
-                        movie.posterImgBitmap = img
+
+                    for (i in 0..1) {
+                        val endpoint: String = when(i) {
+                            0 -> Constants.MOVIE_POSTER_ENDPOINT +
+                                    Constants.MOVIE_POSTER_SMALL_SIZE +
+                                    posterUrl
+                            1 -> Constants.MOVIE_POSTER_ENDPOINT +
+                                    Constants.MOVIE_POSTER_LARGE_SIZE +
+                                    posterUrl
+                            else -> ""
+                        }
+
+                        val url = URL(endpoint)
+                        with(url.openConnection() as HttpURLConnection) {
+                            requestMethod = "GET"
+                            val bufferedInputStream = BufferedInputStream(inputStream)
+                            val img = BitmapFactory.decodeStream(bufferedInputStream)
+                            when (i) {
+                                0 -> movie.smallPosterImgBitmap = img
+                                1 -> movie.largePosterImgBitmap = img
+                            }
+                        }
                     }
                 }
                 job.join()
