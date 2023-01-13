@@ -20,5 +20,6 @@ data class MovieModel(
     val video: Boolean,
     val vote_average: Double,
     val vote_count: Int,
-    @Transient var posterImgBitmap: Bitmap? = null
+    @Transient var smallPosterImgBitmap: Bitmap? = null,
+    @Transient var largePosterImgBitmap: Bitmap? = null
 )
