@@ -20,12 +20,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.tomerpacific.moviepresenter.model.MainViewModel
-import com.tomerpacific.moviepresenter.model.MovieModel
 import com.tomerpacific.moviepresenter.ui.theme.MoviePresenterTheme
 import com.tomerpacific.moviepresenter.ui.view.CircularProgressBarIndicator
 import com.tomerpacific.moviepresenter.ui.view.MovieCard
 import com.tomerpacific.moviepresenter.ui.view.MovieView
-import kotlinx.serialization.json.Json
 
 class MainActivity : ComponentActivity() {
 
@@ -41,14 +39,14 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MyAppNavHost()
+                    NavGraph()
                 }
             }
         }
     }
 
     @Composable
-    fun MyAppNavHost() {
+    fun NavGraph() {
         val navController = rememberNavController()
         
         NavHost(navController = navController, startDestination = "main") {
