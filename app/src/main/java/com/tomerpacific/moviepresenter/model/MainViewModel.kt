@@ -37,7 +37,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                     inputStream.bufferedReader().use {
                         it.lines().forEach { line ->
                             val response: TMDBResponse = decodeFromString(TMDBResponse.serializer(), line)
-                            fetchMoviePosters(response)
+                            fetchMoviePosters(response.results)
                         }
                     }
                 }
@@ -46,38 +46,45 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     }
 
 
-    private fun fetchMoviePosters(response: TMDBResponse) {
-        for (movie in response.results) {
+    private fun fetchMoviePosters(movies: List<MovieModel>) {
+
+        for (movie in movies) {
             viewModelScope.launch {
                 val posterUrl = movie.poster_path
+                val endpoint: String = Constants.MOVIE_POSTER_ENDPOINT +
+                        Constants.MOVIE_POSTER_SMALL_SIZE +
+                        posterUrl
                 val job = launch(Dispatchers.IO) {
-
-                    for (i in 0..1) {
-                        val endpoint: String = when(i) {
-                            0 -> Constants.MOVIE_POSTER_ENDPOINT +
-                                    Constants.MOVIE_POSTER_SMALL_SIZE +
-                                    posterUrl
-                            1 -> Constants.MOVIE_POSTER_ENDPOINT +
-                                    Constants.MOVIE_POSTER_LARGE_SIZE +
-                                    posterUrl
-                            else -> ""
-                        }
-
                         val url = URL(endpoint)
                         with(url.openConnection() as HttpURLConnection) {
                             requestMethod = "GET"
                             val bufferedInputStream = BufferedInputStream(inputStream)
                             val img = BitmapFactory.decodeStream(bufferedInputStream)
-                            when (i) {
-                                0 -> movie.smallPosterImgBitmap = img
-                                1 -> movie.largePosterImgBitmap = img
-                            }
+                            movie.smallPosterImgBitmap = img
                         }
                     }
-                }
                 job.join()
-                moviesList.value = response.results
+                moviesList.value = movies
                 inLoadingState.value = false
+            }
+        }
+    }
+
+    fun fetchMoviePoster() {
+        viewModelScope.launch {
+            val posterUrl = movieItemPressed?.poster_path
+            val endpoint: String = Constants.MOVIE_POSTER_ENDPOINT +
+                    Constants.MOVIE_POSTER_LARGE_SIZE +
+                    posterUrl
+            launch(Dispatchers.IO) {
+                val url = URL(endpoint)
+                with(url.openConnection() as HttpURLConnection) {
+                    requestMethod = "GET"
+                    val bufferedInputStream = BufferedInputStream(inputStream)
+                    val img = BitmapFactory.decodeStream(bufferedInputStream)
+                    movieItemPressed?.largePosterImgBitmap = img
+                    inLoadingState.value = false
+                }
             }
         }
     }
