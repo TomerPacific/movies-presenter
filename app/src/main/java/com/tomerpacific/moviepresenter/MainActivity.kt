@@ -53,15 +53,8 @@ class MainActivity : ComponentActivity() {
             composable("main") {
                 MoviesList(navController)
             }
-            composable("movie/{movieId}",
-            arguments = listOf(navArgument("movieId") {
-                type = NavType.IntType
-            })) {
-                val movieId = it.arguments?.getInt("movieId")
-                movieId?.let {
-                    MovieView(viewModel = viewModel)
-                }
-
+            composable("movie") {
+                MovieView(viewModel = viewModel)
             }
         }
     }

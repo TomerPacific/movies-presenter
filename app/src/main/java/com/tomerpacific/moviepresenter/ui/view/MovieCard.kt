@@ -31,8 +31,7 @@ fun MovieCard(movie: MovieModel, navController: NavController, viewModel: MainVi
             .padding(bottom = 5.dp)
             .clickable {
                 viewModel.movieItemPressed = movie
-                navController.currentBackStackEntry?.arguments?.putInt("movieId", movie.id)
-                navController.navigate("movie/${movie.id}")
+                navController.navigate("movie")
             }
     ) {
         Row(
