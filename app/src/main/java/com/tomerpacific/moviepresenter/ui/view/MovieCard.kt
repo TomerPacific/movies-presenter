@@ -31,6 +31,7 @@ fun MovieCard(movie: MovieModel, navController: NavController, viewModel: MainVi
             .padding(bottom = 5.dp)
             .clickable {
                 viewModel.movieItemPressed = movie
+                viewModel.inLoadingState.value = true
                 navController.navigate("movie")
             }
     ) {
