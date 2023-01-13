@@ -14,11 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import com.tomerpacific.moviepresenter.model.MainViewModel
 import com.tomerpacific.moviepresenter.ui.theme.MoviePresenterTheme
 import com.tomerpacific.moviepresenter.ui.view.CircularProgressBarIndicator
