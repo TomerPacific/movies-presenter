@@ -45,7 +45,7 @@ fun MovieCard(movie: MovieModel, navController: NavController, viewModel: MainVi
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
-            movie.posterImgBitmap?.let {
+            movie.smallPosterImgBitmap?.let {
                 Image(
                     bitmap = it.asImageBitmap(),
                     contentDescription = movie.original_title
