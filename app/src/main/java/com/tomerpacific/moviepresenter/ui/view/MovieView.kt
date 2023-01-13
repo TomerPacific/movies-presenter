@@ -42,11 +42,11 @@ fun MovieView(viewModel: MainViewModel) {
                 }
 
                 Row(horizontalArrangement = Arrangement.Center) {
-                    Text(text = movie.release_date, fontSize = 20.sp)
+                    Text(text = "Released : " + movie.release_date, fontSize = 27.sp)
                 }
 
                 Row(horizontalArrangement = Arrangement.Center) {
-                    Text(text = movie.overview, fontSize = 15.sp)
+                    Text(text = movie.overview, fontSize = 23.sp)
                 }
             }
         }
