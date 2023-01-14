@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
     fun MoviesList(navController: NavController) {
         val movies = viewModel.moviesList.value
         val isLoading = viewModel.inLoadingState.value
+        val isInternetConnectionAvailable = viewModel.isInternetConnectionAvailable.value
 
         Column {
             Row ( Modifier.fillMaxWidth(),
@@ -79,8 +81,18 @@ class MainActivity : ComponentActivity() {
                         MovieCard(movie, navController, viewModel)
                     }
                 }
+                NetworkErrorText(isInternetConnectionAvailable)
                 CircularProgressBarIndicator(isLoading)
             }
+        }
+    }
+
+    @Composable
+    fun NetworkErrorText(isInternetConnectionAvailable: Boolean) {
+        if (!isInternetConnectionAvailable) {
+            Text(text = "There is no internet connection. Please check it and try again.",
+                fontSize = 25.sp,
+                textAlign = TextAlign.Center)
         }
     }
 }
