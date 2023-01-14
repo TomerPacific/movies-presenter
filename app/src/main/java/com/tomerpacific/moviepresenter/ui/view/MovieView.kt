@@ -33,7 +33,8 @@ fun MovieView(viewModel: MainViewModel) {
                 Row(horizontalArrangement = Arrangement.Center) {
                     Text(text = movie.original_title,
                         fontSize = 30.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
                     )
                 }
 
