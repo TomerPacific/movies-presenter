@@ -8,6 +8,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tomerpacific.moviepresenter.model.MainViewModel
 
@@ -46,7 +48,10 @@ fun MovieView(viewModel: MainViewModel) {
                 }
 
                 Row(horizontalArrangement = Arrangement.Center) {
-                    Text(text = movie.overview, fontSize = 23.sp)
+                    Text(modifier = Modifier.padding(5.dp),
+                        text = movie.overview,
+                        fontSize = 23.sp,
+                        textAlign = TextAlign.Center)
                 }
             }
         }
