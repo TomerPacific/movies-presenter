@@ -2,6 +2,8 @@ package com.tomerpacific.moviepresenter.ui.view
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +27,8 @@ fun MovieView(viewModel: MainViewModel) {
             contentAlignment = Alignment.TopCenter
         ) {
             CircularProgressBarIndicator(shouldBeDisplayed = isLoading)
-            Column(verticalArrangement = Arrangement.SpaceBetween,
+            Column(modifier = Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(horizontalArrangement = Arrangement.Center) {
                     Text(text = movie.original_title,
