@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tomerpacific.moviepresenter.Utils
 import com.tomerpacific.moviepresenter.model.MainViewModel
 
 @Composable
@@ -48,7 +49,7 @@ fun MovieView(viewModel: MainViewModel) {
                 }
 
                 Row(horizontalArrangement = Arrangement.Center) {
-                    Text(text = "Released : " + movie.release_date, fontSize = 27.sp)
+                    Text(text = "Released : " + Utils.reverseDateFormat(movie.release_date), fontSize = 27.sp)
                 }
 
                 Row(horizontalArrangement = Arrangement.Center) {
