@@ -58,6 +58,14 @@ fun MovieView(viewModel: MainViewModel) {
                         fontSize = 23.sp,
                         textAlign = TextAlign.Center)
                 }
+
+                Row(horizontalArrangement = Arrangement.Center) {
+                    Text(modifier = Modifier.padding(5.dp),
+                        text = "Rating: " + movie.vote_average.toString(),
+                        fontSize = 22.sp,
+                        textAlign = TextAlign.Center,
+                        color = Utils.getColorRating(movie.vote_average))
+                }
             }
         }
     }
