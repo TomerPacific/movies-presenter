@@ -39,7 +39,7 @@ class MovieRepositoryImpl: MovieRepository {
         for (movie in movies) {
             coroutineScope {
                 launch {
-                    val posterUrl = movie.poster_path
+                    val posterUrl = movie.posterImgPath
                     val endpoint: String = Constants.MOVIE_POSTER_ENDPOINT +
                             Constants.MOVIE_POSTER_SMALL_SIZE +
                             posterUrl
@@ -61,7 +61,7 @@ class MovieRepositoryImpl: MovieRepository {
     }
 
     override suspend fun fetchMoviePoster(movie: MovieModel): MovieModel {
-        val posterUrl = movie.poster_path
+        val posterUrl = movie.posterImgPath
         val endpoint: String = Constants.MOVIE_POSTER_ENDPOINT +
                 Constants.MOVIE_POSTER_LARGE_SIZE +
                 posterUrl

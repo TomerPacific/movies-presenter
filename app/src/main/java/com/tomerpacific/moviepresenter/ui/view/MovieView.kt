@@ -34,7 +34,7 @@ fun MovieView(viewModel: MainViewModel) {
                 verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 Row(horizontalArrangement = Arrangement.Center) {
-                    Text(text = movie.original_title,
+                    Text(text = movie.originalTitle,
                         fontSize = 30.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
@@ -45,18 +45,18 @@ fun MovieView(viewModel: MainViewModel) {
                     movie.largePosterImgBitmap?.let {
                         Image(
                             bitmap = it.asImageBitmap(),
-                            contentDescription = movie.original_title
+                            contentDescription = movie.originalTitle
                         )
                     }
                 }
 
                 Row(horizontalArrangement = Arrangement.Center) {
-                    Text(text = "Released : " + Utils.reverseDateFormat(movie.release_date), fontSize = 27.sp)
+                    Text(text = "Released : " + Utils.reverseDateFormat(movie.releaseDate), fontSize = 27.sp)
                 }
 
                 Row(horizontalArrangement = Arrangement.Center) {
                     Text(modifier = Modifier.padding(5.dp),
-                        text = movie.overview,
+                        text = movie.movieOverview,
                         fontSize = 23.sp,
                         textAlign = TextAlign.Center)
                 }
@@ -67,10 +67,10 @@ fun MovieView(viewModel: MainViewModel) {
                         contentDescription = "Star Icon",
                         tint = Color.Yellow)
                     Text(modifier = Modifier.padding(5.dp),
-                        text = "Rating: " + movie.vote_average.toString(),
+                        text = "Rating: " + movie.voteAvg.toString(),
                         fontSize = 22.sp,
                         textAlign = TextAlign.Center,
-                        color = Utils.getColorRating(movie.vote_average))
+                        color = Utils.getColorRating(movie.voteAvg))
                     Icon(modifier = Modifier.size(35.dp),
                         imageVector = Icons.Rounded.Star,
                         contentDescription = "Star Icon",

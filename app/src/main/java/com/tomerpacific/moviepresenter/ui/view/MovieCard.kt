@@ -42,14 +42,14 @@ fun MovieCard(movie: MovieModel, navController: NavController, viewModel: MainVi
         {
             Text(
                 modifier = Modifier.padding(5.dp),
-                text = movie.original_title,
+                text = movie.originalTitle,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
             movie.smallPosterImgBitmap?.let {
                 Image(
                     bitmap = it.asImageBitmap(),
-                    contentDescription = movie.original_title
+                    contentDescription = movie.originalTitle
                 )
             }
 
