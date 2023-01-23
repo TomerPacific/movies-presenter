@@ -7,6 +7,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.tomerpacific.moviepresenter.network.NetworkConnectivityManager
 import com.tomerpacific.moviepresenter.repository.MovieRepositoryImpl
+import com.tomerpacific.moviepresenter.service.SharedPreferencesService
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
@@ -20,6 +21,8 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     var movieItemPressed: MovieModel? = null
 
     init {
+
+        SharedPreferencesService.initializeSharedPrefs(application.applicationContext)
 
         if (!networkConnectivityManager.isNetworkConnected(application.applicationContext)) {
             inLoadingState.value = false
