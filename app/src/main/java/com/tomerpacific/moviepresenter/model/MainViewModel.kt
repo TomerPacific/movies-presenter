@@ -5,15 +5,16 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.tomerpacific.moviepresenter.network.MovieImageCache
 import com.tomerpacific.moviepresenter.network.NetworkConnectivityManager
 import com.tomerpacific.moviepresenter.repository.MovieRepositoryImpl
-import com.tomerpacific.moviepresenter.service.SharedPreferencesService
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private val movieRepository: MovieRepositoryImpl = MovieRepositoryImpl()
     private val networkConnectivityManager: NetworkConnectivityManager = NetworkConnectivityManager()
+    private val movieImageCache: MovieImageCache = MovieImageCache()
     val moviesList: MutableState<List<MovieModel>> = mutableStateOf(listOf())
     var inLoadingState: MutableState<Boolean> = mutableStateOf(true)
     var isInternetConnectionAvailable: MutableState<Boolean> = mutableStateOf(true)
@@ -21,8 +22,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     var movieItemPressed: MovieModel? = null
 
     init {
-
-        SharedPreferencesService.initializeSharedPrefs(application.applicationContext)
 
         if (!networkConnectivityManager.isNetworkConnected(application.applicationContext)) {
             inLoadingState.value = false
@@ -41,9 +40,13 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
     fun fetchMoviePoster() {
         movieItemPressed?.let { movie ->
-            viewModelScope.launch {
+            movieImageCache.getBitmapFromCache(movie.posterImgPath)?.also { bitmap ->
+                movieItemPressed!!.largePosterImgBitmap = bitmap
+                inLoadingState.value = false
+            } ?: viewModelScope.launch {
                 movieItemPressed = movieRepository.fetchMoviePoster(movie)
                 inLoadingState.value = false
+                movieImageCache.saveBitmapToCache(movie.posterImgPath, movie.largePosterImgBitmap!!)
             }
         }
     }
