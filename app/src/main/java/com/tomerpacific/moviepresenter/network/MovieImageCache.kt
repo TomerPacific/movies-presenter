@@ -1,0 +1,32 @@
+package com.tomerpacific.moviepresenter.network
+
+import android.graphics.Bitmap
+import android.util.LruCache
+
+
+class MovieImageCache {
+
+    private var memoryCache: LruCache<String, Bitmap>
+
+    init {
+        val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
+
+        val cacheSize = maxMemory / 8
+
+        memoryCache = object : LruCache<String, Bitmap>(cacheSize) {
+
+            override fun sizeOf(key: String, bitmap: Bitmap): Int {
+                return bitmap.byteCount / 1024
+            }
+        }
+    }
+
+    fun saveBitmapToCache(key: String, bitmap: Bitmap) {
+        memoryCache.put(key, bitmap)
+    }
+
+    fun getBitmapFromCache(key: String): Bitmap? {
+        return memoryCache.get(key)
+    }
+
+}
