@@ -8,6 +8,7 @@ import com.tomerpacific.moviepresenter.model.TMDBResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.io.BufferedInputStream
 import java.net.HttpURLConnection
@@ -25,8 +26,7 @@ class MovieRepositoryImpl: MovieRepository {
 
                     inputStream.bufferedReader().use {
                         it.lines().forEach { line ->
-                            response =
-                                Json.decodeFromString(TMDBResponse.serializer(), line)
+                            response = Json.decodeFromString<TMDBResponse>(line)
                         }
                     }
                 }
