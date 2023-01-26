@@ -17,12 +17,13 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.tomerpacific.moviepresenter.model.MainViewModel
 import com.tomerpacific.moviepresenter.model.MovieModel
 
 @Composable
-fun MovieCard(movie: MovieModel, navController: NavController, viewModel: MainViewModel) {
+fun MovieCard(movie: MovieModel,
+              viewModel: MainViewModel,
+              onNavigateToMovieView: () -> Unit) {
 
     Card(
         border = BorderStroke(2.dp, Color.Cyan),
@@ -32,7 +33,7 @@ fun MovieCard(movie: MovieModel, navController: NavController, viewModel: MainVi
             .clickable {
                 viewModel.movieItemPressed = movie
                 viewModel.inLoadingState.value = true
-                navController.navigate("movie")
+                onNavigateToMovieView()
             }
     ) {
         Row(

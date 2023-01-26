@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -45,12 +45,17 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun NavGraph() {
-        val navController = rememberNavController()
-        
-        NavHost(navController = navController, startDestination = "main") {
+    fun NavGraph(
+        navController: NavHostController = rememberNavController(),
+        startDestination: String = "main"
+    ) {
+        NavHost(
+            navController = navController,
+            startDestination = startDestination) {
             composable("main") {
-                MoviesList(navController)
+                MoviesList(onNavigateToMovieView = {
+                    navController.navigate("movie")
+                })
             }
             composable("movie") {
                 MovieView(viewModel = viewModel)
@@ -60,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
 
     @Composable
-    fun MoviesList(navController: NavController) {
+    fun MoviesList(onNavigateToMovieView: () -> Unit) {
         val movies = viewModel.moviesList.value
         val isLoading = viewModel.inLoadingState.value
         val isInternetConnectionAvailable = viewModel.isInternetConnectionAvailable.value
@@ -78,7 +83,7 @@ class MainActivity : ComponentActivity() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     items(movies) { movie ->
-                        MovieCard(movie, navController, viewModel)
+                        MovieCard(movie, viewModel, onNavigateToMovieView)
                     }
                 }
                 NetworkErrorText(isInternetConnectionAvailable)
