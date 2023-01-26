@@ -31,8 +31,7 @@ fun MovieCard(movie: MovieModel,
             .fillMaxWidth()
             .padding(bottom = 5.dp)
             .clickable {
-                viewModel.movieItemPressed = movie
-                viewModel.inLoadingState.value = true
+                viewModel.handleNavigationToMovieViewFromMovieCard(movie)
                 onNavigateToMovieView()
             }
     ) {

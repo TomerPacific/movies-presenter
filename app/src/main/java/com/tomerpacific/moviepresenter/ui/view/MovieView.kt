@@ -23,8 +23,6 @@ fun MovieView(viewModel: MainViewModel) {
 
     val isLoading: Boolean = viewModel.inLoadingState.value
 
-    viewModel.fetchMoviePoster()
-
     viewModel.movieItemPressed?.let { movie ->
         Box(modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter

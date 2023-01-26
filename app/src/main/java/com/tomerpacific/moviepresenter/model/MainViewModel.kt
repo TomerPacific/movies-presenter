@@ -38,7 +38,14 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun fetchMoviePoster() {
+    fun handleNavigationToMovieViewFromMovieCard(movie: MovieModel) {
+        movieItemPressed = movie
+        inLoadingState.value = true
+        fetchMoviePoster()
+    }
+
+
+    private fun fetchMoviePoster() {
         movieItemPressed?.let { movie ->
             movieImageCache.getBitmapFromCache(movie.posterImgPath)?.also { bitmap ->
                 movieItemPressed!!.largePosterImgBitmap = bitmap
