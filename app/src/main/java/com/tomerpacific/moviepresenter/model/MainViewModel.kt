@@ -1,6 +1,7 @@
 package com.tomerpacific.moviepresenter.model
 
 import android.app.Application
+import android.graphics.Bitmap
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
@@ -41,20 +42,30 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     fun handleNavigationToMovieViewFromMovieCard(movie: MovieModel) {
         movieItemPressed = movie
         inLoadingState.value = true
-        fetchMoviePoster()
+        fetchMoviePoster(movie)
     }
 
 
-    private fun fetchMoviePoster() {
-        movieItemPressed?.let { movie ->
-            movieImageCache.getBitmapFromCache(movie.posterImgPath)?.also { bitmap ->
-                movieItemPressed!!.largePosterImgBitmap = bitmap
+    private fun fetchMoviePoster(movie: MovieModel) {
+            val imagePath: String = when (movie.backdropImgPath) {
+                null -> movie.posterImgPath
+                else -> movie.backdropImgPath
+            }
+
+            movieImageCache.getBitmapFromCache(imagePath)?.also { bitmap ->
+                when (imagePath) {
+                    movie.posterImgPath -> movieItemPressed!!.smallPosterImgBitmap = bitmap
+                    else -> movieItemPressed!!.largeBackdropImgBitmap = bitmap
+                }
                 inLoadingState.value = false
             } ?: viewModelScope.launch {
                 movieItemPressed = movieRepository.fetchMoviePoster(movie)
                 inLoadingState.value = false
-                movieImageCache.saveBitmapToCache(movie.posterImgPath, movie.largePosterImgBitmap!!)
+                val bitmap: Bitmap? = when (imagePath) {
+                    movie.posterImgPath -> movie.smallPosterImgBitmap
+                    else -> movie.largeBackdropImgBitmap
+                }
+                movieImageCache.saveBitmapToCache(imagePath, bitmap!!)
             }
         }
-    }
 }
