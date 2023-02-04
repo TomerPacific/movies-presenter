@@ -33,5 +33,5 @@ data class MovieModel(
     @SerialName("vote_count")
     val voteCount: Int,
     @Transient var smallPosterImgBitmap: Bitmap? = null,
-    @Transient var largePosterImgBitmap: Bitmap? = null
+    @Transient var largeBackdropImgBitmap: Bitmap? = null
 )

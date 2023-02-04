@@ -40,7 +40,7 @@ fun MovieView(viewModel: MainViewModel) {
                 }
 
                 Row(horizontalArrangement = Arrangement.Center) {
-                    movie.largePosterImgBitmap?.let {
+                    movie.largeBackdropImgBitmap?.let {
                         Image(
                             bitmap = it.asImageBitmap(),
                             contentDescription = movie.originalTitle

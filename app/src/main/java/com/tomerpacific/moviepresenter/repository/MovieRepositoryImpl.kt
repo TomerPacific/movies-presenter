@@ -61,7 +61,7 @@ class MovieRepositoryImpl: MovieRepository {
     }
 
     override suspend fun fetchMoviePoster(movie: MovieModel): MovieModel {
-        val posterUrl = movie.posterImgPath
+        val posterUrl = movie.backdropImgPath
         val endpoint: String = Constants.MOVIE_POSTER_ENDPOINT +
                 Constants.MOVIE_POSTER_LARGE_SIZE +
                 posterUrl
@@ -72,7 +72,7 @@ class MovieRepositoryImpl: MovieRepository {
                     requestMethod = "GET"
                     val bufferedInputStream = BufferedInputStream(inputStream)
                     val img = BitmapFactory.decodeStream(bufferedInputStream)
-                    movie.largePosterImgBitmap = img
+                    movie.largeBackdropImgBitmap = img
                 }
             }
         }
