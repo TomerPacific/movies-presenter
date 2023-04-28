@@ -15,6 +15,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 class MovieRepositoryImpl: MovieRepository {
+
+    private val REQUEST_METHOD_GET = "GET"
+
     override suspend fun fetchMovies(): TMDBResponse? {
         var response: TMDBResponse? = null
         coroutineScope {
@@ -22,7 +25,7 @@ class MovieRepositoryImpl: MovieRepository {
             launch(Dispatchers.IO) {
                 val url = URL(endpoint)
                 with(url.openConnection() as HttpURLConnection) {
-                    requestMethod = "GET"
+                    requestMethod = REQUEST_METHOD_GET
 
                     inputStream.bufferedReader().use {
                         it.lines().forEach { line ->
@@ -46,7 +49,7 @@ class MovieRepositoryImpl: MovieRepository {
                     val job = launch(Dispatchers.IO) {
                         val url = URL(endpoint)
                         with(url.openConnection() as HttpURLConnection) {
-                            requestMethod = "GET"
+                            requestMethod = REQUEST_METHOD_GET
                             val bufferedInputStream = BufferedInputStream(inputStream)
                             val img = BitmapFactory.decodeStream(bufferedInputStream)
                             movie.smallPosterImgBitmap = img
@@ -69,7 +72,7 @@ class MovieRepositoryImpl: MovieRepository {
             launch(Dispatchers.IO) {
                 val url = URL(endpoint)
                 with(url.openConnection() as HttpURLConnection) {
-                    requestMethod = "GET"
+                    requestMethod = REQUEST_METHOD_GET
                     val bufferedInputStream = BufferedInputStream(inputStream)
                     val img = BitmapFactory.decodeStream(bufferedInputStream)
                     movie.largeBackdropImgBitmap = img
