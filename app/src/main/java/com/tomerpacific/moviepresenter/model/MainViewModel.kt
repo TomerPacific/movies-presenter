@@ -65,7 +65,11 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                     movie.posterImgPath -> movie.smallPosterImgBitmap
                     else -> movie.largeBackdropImgBitmap
                 }
-                movieImageCache.saveBitmapToCache(imagePath, bitmap!!)
+
+                bitmap?.let {
+                    movieImageCache.saveBitmapToCache(imagePath, it)
+                }
+
             }
         }
 }
