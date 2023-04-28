@@ -6,7 +6,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.tomerpacific.moviepresenter.network.MovieImageCache
+import com.tomerpacific.moviepresenter.cache.MovieImageCache
 import com.tomerpacific.moviepresenter.network.NetworkConnectivityManager
 import com.tomerpacific.moviepresenter.repository.MovieRepositoryImpl
 import kotlinx.coroutines.launch

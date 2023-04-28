@@ -1,4 +1,4 @@
-package com.tomerpacific.moviepresenter.network
+package com.tomerpacific.moviepresenter.cache
 
 import android.graphics.Bitmap
 import android.util.LruCache
