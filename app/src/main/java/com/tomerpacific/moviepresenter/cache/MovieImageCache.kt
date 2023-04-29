@@ -1,4 +1,4 @@
-package com.tomerpacific.moviepresenter.network
+package com.tomerpacific.moviepresenter.cache
 
 import android.graphics.Bitmap
 import android.util.LruCache
@@ -7,16 +7,18 @@ import android.util.LruCache
 class MovieImageCache {
 
     private var memoryCache: LruCache<String, Bitmap>
+    private val MEGA_BYTE = 1024
+    private val AMOUNT_OF_RAM = 8
 
     init {
-        val maxMemory = (Runtime.getRuntime().maxMemory() / 1024).toInt()
+        val maxMemory = (Runtime.getRuntime().maxMemory() / MEGA_BYTE).toInt()
 
-        val cacheSize = maxMemory / 8
+        val cacheSize = maxMemory / AMOUNT_OF_RAM
 
         memoryCache = object : LruCache<String, Bitmap>(cacheSize) {
 
             override fun sizeOf(key: String, bitmap: Bitmap): Int {
-                return bitmap.byteCount / 1024
+                return bitmap.byteCount / MEGA_BYTE
             }
         }
     }

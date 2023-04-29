@@ -27,6 +27,7 @@ import com.tomerpacific.moviepresenter.ui.view.MovieView
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
+    private val APP_TITLE = "Movie Presenter"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,7 +75,7 @@ class MainActivity : ComponentActivity() {
             Row ( Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = Constants.APP_TITLE, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                Text(text = APP_TITLE, fontSize = 30.sp, fontWeight = FontWeight.Bold)
             }
             Box(modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
