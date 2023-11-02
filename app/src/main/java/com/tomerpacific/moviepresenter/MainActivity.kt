@@ -67,9 +67,10 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun MoviesList(onNavigateToMovieView: () -> Unit) {
-        val movies = viewModel.moviesList.value
-        val isLoading = viewModel.inLoadingState.value
-        val isInternetConnectionAvailable = viewModel.isInternetConnectionAvailable.value
+
+        val movies by  viewModel.moviesList.collectAsState()
+        val isLoading by viewModel.inLoadingState.collectAsState()
+        val isInternetConnectionAvailable by viewModel.isInternetConnectionAvailable.collectAsState()
 
         Column {
             Row ( Modifier.fillMaxWidth(),
