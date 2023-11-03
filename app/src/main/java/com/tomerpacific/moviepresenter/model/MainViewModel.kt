@@ -9,6 +9,7 @@ import com.tomerpacific.moviepresenter.network.NetworkConnectivityManager
 import com.tomerpacific.moviepresenter.repository.MovieRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
@@ -78,4 +79,18 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
 
             }
         }
+
+    fun fetchMoreMovies() {
+        _inLoadingState.value = true
+        viewModelScope.launch {
+            movieRepository.fetchMovies()?.let { response ->
+                var movies: List<MovieModel> = response.results
+                movies = movieRepository.fetchMoviePosters(movies)
+                _moviesList.update {
+                    it + movies
+                }
+                _inLoadingState.value = false
+            }
+        }
+    }
 }
