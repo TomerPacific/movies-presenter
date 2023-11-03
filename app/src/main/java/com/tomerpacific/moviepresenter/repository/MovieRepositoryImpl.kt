@@ -19,7 +19,7 @@ class MovieRepositoryImpl: MovieRepository {
     private var requestPageIndex: Int = 1
 
     private val REQUEST_METHOD_GET = "GET"
-    private val POPULAR_MOVIES_ENDPOINT = "https://api.themoviedb.org/3/movie/popular?api_key=${BuildConfig.TMDB_API_KEY}&language=en-US&page=${requestPageIndex}"
+    private val POPULAR_MOVIES_ENDPOINT = "https://api.themoviedb.org/3/movie/popular?api_key=${BuildConfig.TMDB_API_KEY}&language=en-US&page="
     private val MOVIE_POSTER_ENDPOINT = "https://image.tmdb.org/t/p/"
     private val MOVIE_POSTER_SMALL_SIZE = "w200/"
     private val MOVIE_POSTER_LARGE_SIZE = "w500/"
@@ -27,7 +27,7 @@ class MovieRepositoryImpl: MovieRepository {
     override suspend fun fetchMovies(): TMDBResponse? {
         var response: TMDBResponse? = null
         coroutineScope {
-            val endpoint: String = POPULAR_MOVIES_ENDPOINT
+            val endpoint: String = POPULAR_MOVIES_ENDPOINT + requestPageIndex++
             launch(Dispatchers.IO) {
                 val url = URL(endpoint)
                 with(url.openConnection() as HttpURLConnection) {
@@ -41,6 +41,7 @@ class MovieRepositoryImpl: MovieRepository {
                 }
             }
         }
+
         return response
     }
 
