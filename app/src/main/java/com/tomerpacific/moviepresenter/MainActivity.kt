@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
         val isInternetConnectionAvailable by viewModel.isInternetConnectionAvailable.collectAsState()
         val lazyListState = rememberLazyListState()
 
-        val userReachedBottomOfColumn = DidUserReachBottomOfColumn(lazyListState = lazyListState)
+        val userReachedBottomOfColumn = didUserReachBottomOfColumn(lazyListState = lazyListState, bufferFromBottom = 3)
 
         LaunchedEffect(userReachedBottomOfColumn){
             if (userReachedBottomOfColumn) {
@@ -118,7 +118,7 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun DidUserReachBottomOfColumn(lazyListState: LazyListState): Boolean {
+    fun didUserReachBottomOfColumn(lazyListState: LazyListState, bufferFromBottom: Int): Boolean {
         val isUserAtBottomOfColumn by remember {
             derivedStateOf {
                 val layoutInfo = lazyListState.layoutInfo
@@ -127,10 +127,8 @@ class MainActivity : ComponentActivity() {
                     false
                 } else {
                     val lastVisibleItem = visibleItemsInfo.last()
-                    val viewportHeight = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
 
-                    (lastVisibleItem.index + 1 == layoutInfo.totalItemsCount &&
-                            lastVisibleItem.offset + lastVisibleItem.size <= viewportHeight)
+                    lastVisibleItem.index >= layoutInfo.totalItemsCount - 1 - bufferFromBottom
                 }
             }
         }
