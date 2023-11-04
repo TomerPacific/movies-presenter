@@ -6,7 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -71,6 +73,17 @@ class MainActivity : ComponentActivity() {
         val movies by  viewModel.moviesList.collectAsState()
         val isLoading by viewModel.inLoadingState.collectAsState()
         val isInternetConnectionAvailable by viewModel.isInternetConnectionAvailable.collectAsState()
+        val lazyListState = rememberLazyListState()
+
+        val userReachedBottomOfColumn = DidUserReachBottomOfColumn(lazyListState = lazyListState)
+
+        LaunchedEffect(userReachedBottomOfColumn){
+            if (userReachedBottomOfColumn) {
+                viewModel.fetchMoreMovies()
+            }
+        }
+
+        val shouldShowCircularProgressBar: Boolean = isLoading || userReachedBottomOfColumn
 
         Column {
             Row ( Modifier.fillMaxWidth(),
@@ -82,14 +95,15 @@ class MainActivity : ComponentActivity() {
                 contentAlignment = Alignment.Center
             ) {
                 LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    state = lazyListState
                 ) {
                     items(movies) { movie ->
                         MovieCard(movie, viewModel, onNavigateToMovieView)
                     }
                 }
                 NetworkErrorText(isInternetConnectionAvailable)
-                CircularProgressBarIndicator(isLoading)
+                CircularProgressBarIndicator(shouldShowCircularProgressBar)
             }
         }
     }
@@ -101,5 +115,26 @@ class MainActivity : ComponentActivity() {
                 fontSize = 25.sp,
                 textAlign = TextAlign.Center)
         }
+    }
+
+    @Composable
+    fun DidUserReachBottomOfColumn(lazyListState: LazyListState): Boolean {
+        val isUserAtBottomOfColumn by remember {
+            derivedStateOf {
+                val layoutInfo = lazyListState.layoutInfo
+                val visibleItemsInfo = layoutInfo.visibleItemsInfo
+                if (layoutInfo.totalItemsCount == 0) {
+                    false
+                } else {
+                    val lastVisibleItem = visibleItemsInfo.last()
+                    val viewportHeight = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
+
+                    (lastVisibleItem.index + 1 == layoutInfo.totalItemsCount &&
+                            lastVisibleItem.offset + lastVisibleItem.size <= viewportHeight)
+                }
+            }
+        }
+
+        return isUserAtBottomOfColumn
     }
 }
