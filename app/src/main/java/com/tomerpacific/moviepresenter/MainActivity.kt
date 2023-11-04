@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -74,29 +75,15 @@ class MainActivity : ComponentActivity() {
         val isInternetConnectionAvailable by viewModel.isInternetConnectionAvailable.collectAsState()
         val lazyListState = rememberLazyListState()
 
-        val isAtBottom by remember {
-            derivedStateOf {
-                val layoutInfo = lazyListState.layoutInfo
-                val visibleItemsInfo = layoutInfo.visibleItemsInfo
-                if (layoutInfo.totalItemsCount == 0) {
-                    false
-                } else {
-                    val lastVisibleItem = visibleItemsInfo.last()
-                    val viewportHeight = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
+        val userReachedBottomOfColumn = DidUserReachBottomOfColumn(lazyListState = lazyListState)
 
-                    (lastVisibleItem.index + 1 == layoutInfo.totalItemsCount &&
-                            lastVisibleItem.offset + lastVisibleItem.size <= viewportHeight)
-                }
-            }
-        }
-
-        LaunchedEffect(isAtBottom){
-            if (isAtBottom) {
+        LaunchedEffect(userReachedBottomOfColumn){
+            if (userReachedBottomOfColumn) {
                 viewModel.fetchMoreMovies()
             }
         }
 
-        val shouldShowCircularProgressBar: Boolean = isLoading || isAtBottom
+        val shouldShowCircularProgressBar: Boolean = isLoading || userReachedBottomOfColumn
 
         Column {
             Row ( Modifier.fillMaxWidth(),
@@ -128,5 +115,26 @@ class MainActivity : ComponentActivity() {
                 fontSize = 25.sp,
                 textAlign = TextAlign.Center)
         }
+    }
+
+    @Composable
+    fun DidUserReachBottomOfColumn(lazyListState: LazyListState): Boolean {
+        val isUserAtBottomOfColumn by remember {
+            derivedStateOf {
+                val layoutInfo = lazyListState.layoutInfo
+                val visibleItemsInfo = layoutInfo.visibleItemsInfo
+                if (layoutInfo.totalItemsCount == 0) {
+                    false
+                } else {
+                    val lastVisibleItem = visibleItemsInfo.last()
+                    val viewportHeight = layoutInfo.viewportEndOffset + layoutInfo.viewportStartOffset
+
+                    (lastVisibleItem.index + 1 == layoutInfo.totalItemsCount &&
+                            lastVisibleItem.offset + lastVisibleItem.size <= viewportHeight)
+                }
+            }
+        }
+
+        return isUserAtBottomOfColumn
     }
 }
