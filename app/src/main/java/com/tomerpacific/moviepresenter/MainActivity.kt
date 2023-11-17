@@ -4,17 +4,24 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,6 +32,11 @@ import com.tomerpacific.moviepresenter.ui.theme.MoviePresenterTheme
 import com.tomerpacific.moviepresenter.ui.view.CircularProgressBarIndicator
 import com.tomerpacific.moviepresenter.ui.view.MovieCard
 import com.tomerpacific.moviepresenter.ui.view.MovieView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
@@ -74,7 +86,7 @@ class MainActivity : ComponentActivity() {
         val isLoading by viewModel.inLoadingState.collectAsState()
         val isInternetConnectionAvailable by viewModel.isInternetConnectionAvailable.collectAsState()
         val lazyListState = rememberLazyListState()
-
+        val coroutineScope = rememberCoroutineScope()
         val userReachedBottomOfColumn = didUserReachBottomOfColumn(lazyListState = lazyListState, bufferFromBottom = 3)
 
         LaunchedEffect(userReachedBottomOfColumn){
@@ -106,6 +118,7 @@ class MainActivity : ComponentActivity() {
                 CircularProgressBarIndicator(shouldShowCircularProgressBar)
             }
         }
+        ScrollToTopButton(coroutineScope, listState = lazyListState)
     }
 
     @Composable
@@ -134,5 +147,23 @@ class MainActivity : ComponentActivity() {
         }
 
         return isUserAtBottomOfColumn
+    }
+
+    @Composable
+    fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            IconButton(
+                modifier = Modifier.align(Alignment.BottomEnd)
+                    .background(Color.White, CircleShape).then(Modifier.size(50.dp))
+                    .border(3.dp, Color.Black, shape = CircleShape),
+                onClick = {
+                    coroutineScope.launch {
+                        listState.animateScrollToItem(0)
+                    }
+                }) {
+                Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Up arrow")
+            }
+        }
+
     }
 }
