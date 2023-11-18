@@ -159,7 +159,6 @@ class MainActivity : ComponentActivity() {
 
         scrollToTopButtonVisibility = listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton
 
-        Log.e("LALALA", scrollToTopButtonVisibility.toString())
         AnimatedVisibility(visible = scrollToTopButtonVisibility,
             enter = fadeIn(),
             exit = fadeOut()) {
