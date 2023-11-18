@@ -1,7 +1,6 @@
 package com.tomerpacific.moviepresenter
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -157,7 +156,7 @@ class MainActivity : ComponentActivity() {
             mutableStateOf(false)
         }
 
-        scrollToTopButtonVisibility = listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton
+        scrollToTopButtonVisibility = shouldShowScrollTopTopButton(listState)
 
         AnimatedVisibility(visible = scrollToTopButtonVisibility,
             enter = fadeIn(),
@@ -178,5 +177,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    private fun shouldShowScrollTopTopButton(listState: LazyListState): Boolean {
+        return listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton
     }
 }
