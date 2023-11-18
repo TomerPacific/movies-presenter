@@ -1,9 +1,13 @@
 package com.tomerpacific.moviepresenter
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -149,12 +153,22 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) {
+        var visible by remember {
+            mutableStateOf(false)
+        }
 
-        if (listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton) {
+        visible = listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton
+
+        Log.e("LALALA", visible.toString())
+        AnimatedVisibility(visible = visible,
+            enter = fadeIn(),
+            exit = fadeOut()) {
             Box(modifier = Modifier.fillMaxSize()) {
                 IconButton(
-                    modifier = Modifier.align(Alignment.BottomEnd)
-                        .background(Color.White, CircleShape).then(Modifier.size(50.dp))
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .background(Color.White, CircleShape)
+                        .then(Modifier.size(50.dp))
                         .border(3.dp, Color.Black, shape = CircleShape),
                     onClick = {
                         coroutineScope.launch {
