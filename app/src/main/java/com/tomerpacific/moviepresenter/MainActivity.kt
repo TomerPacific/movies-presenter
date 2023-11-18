@@ -153,14 +153,14 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) {
-        var visible by remember {
+        var scrollToTopButtonVisibility by remember {
             mutableStateOf(false)
         }
 
-        visible = listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton
+        scrollToTopButtonVisibility = listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton
 
-        Log.e("LALALA", visible.toString())
-        AnimatedVisibility(visible = visible,
+        Log.e("LALALA", scrollToTopButtonVisibility.toString())
+        AnimatedVisibility(visible = scrollToTopButtonVisibility,
             enter = fadeIn(),
             exit = fadeOut()) {
             Box(modifier = Modifier.fillMaxSize()) {
