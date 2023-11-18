@@ -33,15 +33,13 @@ import com.tomerpacific.moviepresenter.ui.view.CircularProgressBarIndicator
 import com.tomerpacific.moviepresenter.ui.view.MovieCard
 import com.tomerpacific.moviepresenter.ui.view.MovieView
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private val APP_TITLE = "Movie Presenter"
+    private val itemIndexToShowScrollTopTopButton: Int = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,19 +149,21 @@ class MainActivity : ComponentActivity() {
 
     @Composable
     fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            IconButton(
-                modifier = Modifier.align(Alignment.BottomEnd)
-                    .background(Color.White, CircleShape).then(Modifier.size(50.dp))
-                    .border(3.dp, Color.Black, shape = CircleShape),
-                onClick = {
-                    coroutineScope.launch {
-                        listState.animateScrollToItem(0)
-                    }
-                }) {
-                Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Up arrow")
+
+        if (listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                IconButton(
+                    modifier = Modifier.align(Alignment.BottomEnd)
+                        .background(Color.White, CircleShape).then(Modifier.size(50.dp))
+                        .border(3.dp, Color.Black, shape = CircleShape),
+                    onClick = {
+                        coroutineScope.launch {
+                            listState.animateScrollToItem(0)
+                        }
+                    }) {
+                    Icon(Icons.Filled.KeyboardArrowUp, contentDescription = "Up arrow")
+                }
             }
         }
-
     }
 }
