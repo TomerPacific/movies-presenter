@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private val APP_TITLE = "Movie Presenter"
-    private val itemIndexToShowScrollTopTopButton: Int = 10
+    private val itemIndexToShowScrollToTopButton: Int = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -180,6 +180,6 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun shouldShowScrollTopTopButton(listState: LazyListState): Boolean {
-        return listState.firstVisibleItemIndex >= itemIndexToShowScrollTopTopButton
+        return listState.firstVisibleItemIndex >= itemIndexToShowScrollToTopButton
     }
 }
