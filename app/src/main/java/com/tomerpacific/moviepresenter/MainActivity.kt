@@ -41,7 +41,7 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
-    private val APP_TITLE = "Movie Presenter"
+    private val APP_TITLE = "Movies Presenter"
     private val itemIndexToShowScrollToTopButton: Int = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
