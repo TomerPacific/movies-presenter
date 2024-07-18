@@ -6,9 +6,9 @@ class Utils {
 
     companion object {
 
-        val GREAT_RATING_COLOR = Color(40, 180, 99)
-        val AVERAGE_RATING_COLOR = Color(212, 172, 13)
-        val POOR_RATING_COLOR = Color(203, 67, 53)
+        private val GREAT_RATING_COLOR = Color(40, 180, 99)
+        private val AVERAGE_RATING_COLOR = Color(212, 172, 13)
+        private val POOR_RATING_COLOR = Color(203, 67, 53)
 
 
         fun reverseDateFormat(date: String):String {
