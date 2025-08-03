@@ -4,9 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -24,24 +26,24 @@ import com.tomerpacific.moviepresenter.model.MovieModel
 fun MovieCard(movie: MovieModel,
               viewModel: MainViewModel,
               onNavigateToMovieView: () -> Unit) {
-
     Card(
         border = BorderStroke(2.dp, Color.Cyan),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 5.dp)
+            .padding(vertical = 5.dp)
             .clickable {
                 viewModel.handleNavigationToMovieViewFromMovieCard(movie)
                 onNavigateToMovieView()
             }
     ) {
         Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
-        )
-        {
+        ) {
             Text(
-                modifier = Modifier.padding(5.dp),
                 text = movie.originalTitle,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
@@ -52,7 +54,6 @@ fun MovieCard(movie: MovieModel,
                     contentDescription = movie.originalTitle
                 )
             }
-
         }
     }
 }

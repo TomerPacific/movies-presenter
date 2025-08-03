@@ -104,28 +104,54 @@ class MainActivity : ComponentActivity() {
 
         val shouldShowCircularProgressBar: Boolean = isLoading || userReachedBottomOfColumn
 
-        Scaffold(contentWindowInsets = WindowInsets.safeContent) { innerPadding ->
-            Column(modifier = Modifier.fillMaxSize().padding(innerPadding)) {
-                Row ( Modifier.fillMaxWidth(),
+        Scaffold(
+            contentWindowInsets = WindowInsets.safeContent
+        ) { innerPadding ->
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(text = APP_TITLE, fontSize = 30.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = APP_TITLE,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
-                Box(modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
                 ) {
                     LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp), // optional horizontal padding
+                        state = lazyListState,
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        state = lazyListState
+                        contentPadding = PaddingValues(bottom = 80.dp) // for nav bar or scroll-to-top
                     ) {
                         items(movies) { movie ->
-                            MovieCard(movie, viewModel, onNavigateToMovieView)
+                            MovieCard(
+                                movie = movie,
+                                viewModel = viewModel,
+                                onNavigateToMovieView = onNavigateToMovieView
+                            )
                         }
                     }
+
                     NetworkErrorText(isInternetConnectionAvailable)
                     CircularProgressBarIndicator(shouldShowCircularProgressBar)
                 }
             }
+
             ScrollToTopButton(coroutineScope, listState = lazyListState)
         }
     }
