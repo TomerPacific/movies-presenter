@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.runtime.*
@@ -37,6 +36,13 @@ import com.tomerpacific.moviepresenter.ui.view.MovieCard
 import com.tomerpacific.moviepresenter.ui.view.MovieView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 
 class MainActivity : ComponentActivity() {
 
@@ -52,7 +58,7 @@ class MainActivity : ComponentActivity() {
             MoviePresenterTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     NavGraph()
                 }
@@ -98,28 +104,54 @@ class MainActivity : ComponentActivity() {
 
         val shouldShowCircularProgressBar: Boolean = isLoading || userReachedBottomOfColumn
 
-        Column {
-            Row ( Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+        Scaffold(
+            contentWindowInsets = WindowInsets.safeContent
+        ) { innerPadding ->
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
             ) {
-                Text(text = APP_TITLE, fontSize = 30.sp, fontWeight = FontWeight.Bold)
-            }
-            Box(modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                LazyColumn(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    state = lazyListState
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 16.dp),
+                    horizontalArrangement = Arrangement.Center
                 ) {
-                    items(movies) { movie ->
-                        MovieCard(movie, viewModel, onNavigateToMovieView)
-                    }
+                    Text(
+                        text = APP_TITLE,
+                        fontSize = 30.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
-                NetworkErrorText(isInternetConnectionAvailable)
-                CircularProgressBarIndicator(shouldShowCircularProgressBar)
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                ) {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        state = lazyListState,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        items(movies) { movie ->
+                            MovieCard(
+                                movie = movie,
+                                viewModel = viewModel,
+                                onNavigateToMovieView = onNavigateToMovieView
+                            )
+                        }
+                    }
+
+                    NetworkErrorText(isInternetConnectionAvailable)
+                    CircularProgressBarIndicator(shouldShowCircularProgressBar)
+                }
             }
+
+            ScrollToTopButton(coroutineScope, listState = lazyListState)
         }
-        ScrollToTopButton(coroutineScope, listState = lazyListState)
     }
 
     @Composable
