@@ -132,11 +132,9 @@ class MainActivity : ComponentActivity() {
                 ) {
                     LazyColumn(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp), // optional horizontal padding
+                            .fillMaxSize(),
                         state = lazyListState,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        contentPadding = PaddingValues(bottom = 80.dp) // for nav bar or scroll-to-top
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(movies) { movie ->
                             MovieCard(
