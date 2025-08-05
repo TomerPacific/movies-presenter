@@ -32,6 +32,7 @@ compose-ui-test-manifest = { group = "androidx.compose.ui",      name = "ui-test
 
 [plugins]
 android-app        = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library",     version.ref = "agp" }
 kotlin-android     = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 secrets-gradle     = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "secrets" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
