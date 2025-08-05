@@ -1,10 +1,5 @@
 buildscript {
     extra.set("compose_version", "1.4.0")
-
-    dependencies {
-        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
-        classpath("org.jetbrains.kotlin:kotlin-serialization:1.8.0")
-    }
 }
 
 plugins {
