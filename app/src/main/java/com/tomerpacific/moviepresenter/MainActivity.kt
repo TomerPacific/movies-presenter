@@ -46,7 +46,7 @@ import androidx.compose.material3.Text
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel: MainViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     private val APP_TITLE = "Movies Presenter"
     private val itemIndexToShowScrollToTopButton: Int = 10
 
@@ -80,7 +80,7 @@ class MainActivity : ComponentActivity() {
                 })
             }
             composable("movie") {
-                MovieView(viewModel = viewModel)
+                MovieView(viewModel = mainViewModel)
             }
         }
     }
@@ -89,16 +89,16 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MoviesList(onNavigateToMovieView: () -> Unit) {
 
-        val movies by  viewModel.moviesList.collectAsState()
-        val isLoading by viewModel.inLoadingState.collectAsState()
-        val isInternetConnectionAvailable by viewModel.isInternetConnectionAvailable.collectAsState()
+        val movies by  mainViewModel.moviesList.collectAsState()
+        val isLoading by mainViewModel.inLoadingState.collectAsState()
+        val isInternetConnectionAvailable by mainViewModel.isInternetConnectionAvailable.collectAsState()
         val lazyListState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
         val userReachedBottomOfColumn = didUserReachBottomOfColumn(lazyListState = lazyListState, bufferFromBottom = 3)
 
         LaunchedEffect(userReachedBottomOfColumn){
             if (userReachedBottomOfColumn) {
-                viewModel.fetchMoreMovies()
+                mainViewModel.fetchMoreMovies()
             }
         }
 
@@ -139,7 +139,7 @@ class MainActivity : ComponentActivity() {
                         items(movies) { movie ->
                             MovieCard(
                                 movie = movie,
-                                viewModel = viewModel,
+                                viewModel = mainViewModel,
                                 onNavigateToMovieView = onNavigateToMovieView
                             )
                         }
