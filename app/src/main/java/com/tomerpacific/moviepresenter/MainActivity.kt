@@ -89,20 +89,17 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MoviesList(onNavigateToMovieView: () -> Unit) {
 
-        val movies by  mainViewModel.moviesList.collectAsState()
-        val isLoading by mainViewModel.inLoadingState.collectAsState()
-        val isInternetConnectionAvailable by mainViewModel.isInternetConnectionAvailable.collectAsState()
+        val mainUiState by mainViewModel.mainUiState.collectAsState()
         val lazyListState = rememberLazyListState()
         val coroutineScope = rememberCoroutineScope()
-        val userReachedBottomOfColumn = didUserReachBottomOfColumn(lazyListState = lazyListState, bufferFromBottom = 3)
+        val userReachedBottomOfColumn =
+            didUserReachBottomOfColumn(lazyListState = lazyListState, bufferFromBottom = 3)
 
-        LaunchedEffect(userReachedBottomOfColumn){
+        LaunchedEffect(userReachedBottomOfColumn) {
             if (userReachedBottomOfColumn) {
                 mainViewModel.fetchMoreMovies()
             }
         }
-
-        val shouldShowCircularProgressBar: Boolean = isLoading || userReachedBottomOfColumn
 
         Scaffold(
             contentWindowInsets = WindowInsets.safeContent
@@ -136,31 +133,41 @@ class MainActivity : ComponentActivity() {
                         state = lazyListState,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(movies) { movie ->
-                            MovieCard(
-                                movie = movie,
-                                viewModel = mainViewModel,
-                                onNavigateToMovieView = onNavigateToMovieView
-                            )
+                        when {
+                            mainUiState.isLoading || userReachedBottomOfColumn -> {
+                                item {
+                                    CircularProgressBarIndicator()
+                                }
+                            }
+
+                            !mainUiState.isInternetConnectionAvailable -> {
+                                item {
+                                    NetworkErrorText()
+                                }
+                            }
+
+                            mainUiState.moviesList?.isNotEmpty()!! -> {
+                                items(mainUiState.moviesList!!) { movie ->
+                                    MovieCard(
+                                        movie = movie,
+                                        viewModel = mainViewModel,
+                                        onNavigateToMovieView = onNavigateToMovieView
+                                    )
+                                }
+                            }
                         }
                     }
-
-                    NetworkErrorText(isInternetConnectionAvailable)
-                    CircularProgressBarIndicator(shouldShowCircularProgressBar)
+                    ScrollToTopButton(coroutineScope, listState = lazyListState)
                 }
             }
-
-            ScrollToTopButton(coroutineScope, listState = lazyListState)
         }
     }
 
     @Composable
-    fun NetworkErrorText(isInternetConnectionAvailable: Boolean) {
-        if (!isInternetConnectionAvailable) {
-            Text(text = "There is no internet connection. Please check it and try again.",
-                fontSize = 25.sp,
-                textAlign = TextAlign.Center)
-        }
+    fun NetworkErrorText() {
+        Text(text = "There is no internet connection. Please check it and try again.",
+            fontSize = 25.sp,
+            textAlign = TextAlign.Center)
     }
 
     @Composable
@@ -169,7 +176,7 @@ class MainActivity : ComponentActivity() {
             derivedStateOf {
                 val layoutInfo = lazyListState.layoutInfo
                 val visibleItemsInfo = layoutInfo.visibleItemsInfo
-                if (layoutInfo.totalItemsCount == 0) {
+                if (layoutInfo.totalItemsCount <= 1) {
                     false
                 } else {
                     val lastVisibleItem = visibleItemsInfo.last()
