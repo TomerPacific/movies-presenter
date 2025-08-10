@@ -7,16 +7,22 @@ import androidx.lifecycle.viewModelScope
 import com.tomerpacific.moviepresenter.cache.MovieImageCache
 import com.tomerpacific.moviepresenter.network.NetworkConnectivityManager
 import com.tomerpacific.moviepresenter.repository.MovieRepositoryImpl
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainViewModel(application: Application): AndroidViewModel(application) {
 
     private val movieRepository: MovieRepositoryImpl = MovieRepositoryImpl()
     private val networkConnectivityManager: NetworkConnectivityManager = NetworkConnectivityManager()
     private val movieImageCache: MovieImageCache = MovieImageCache()
+
+    private val _mainUiState = MutableStateFlow(MainUiState())
+    val mainUiState: StateFlow<MainUiState> = _mainUiState.asStateFlow()
 
     private val _moviesList: MutableStateFlow<List<MovieModel>> = MutableStateFlow(listOf())
     val moviesList: StateFlow<List<MovieModel>> = _moviesList
@@ -25,30 +31,49 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     val inLoadingState: StateFlow<Boolean> = _inLoadingState
 
     private val _isInternetConnectionAvailable: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val isInternetConnectionAvailable: StateFlow<Boolean> = _isInternetConnectionAvailable
 
     var movieItemPressed: MovieModel? = null
 
     init {
 
         if (!networkConnectivityManager.isNetworkConnected(application.applicationContext)) {
-            _inLoadingState.value = false
-            _isInternetConnectionAvailable.value = false
+            _mainUiState.update {
+                it.copy(
+                    isLoading = false,
+                    isInternetConnectionAvailable = false,
+                    moviesList = emptyList()
+                )
+            }
         } else {
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 movieRepository.fetchMovies()?.let { response ->
                     var movies: List<MovieModel> = response.results
                     movies = movieRepository.fetchMoviePosters(movies)
-                    _moviesList.value = movies
-                    _inLoadingState.value = false
+
+                    withContext(Dispatchers.Main) {
+                        _mainUiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isInternetConnectionAvailable = true,
+                                moviesList = movies
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 
     fun handleNavigationToMovieViewFromMovieCard(movie: MovieModel) {
-        movieItemPressed = movie
-        _inLoadingState.value = true
+
+        _mainUiState.update {
+            it.copy(
+                isLoading = true,
+                isInternetConnectionAvailable = true,
+                movieItemPressed = movie
+            )
+        }
+
         fetchMoviePoster(movie)
     }
 
@@ -64,32 +89,54 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                     movie.posterImgPath -> movieItemPressed!!.smallPosterImgBitmap = bitmap
                     else -> movieItemPressed!!.largeBackdropImgBitmap = bitmap
                 }
-                _inLoadingState.value = false
-            } ?: viewModelScope.launch {
-                movieItemPressed = movieRepository.fetchMoviePoster(movie)
-                _inLoadingState.value = false
-                val bitmap: Bitmap? = when (imagePath) {
-                    movie.posterImgPath -> movie.smallPosterImgBitmap
-                    else -> movie.largeBackdropImgBitmap
-                }
+            } ?:
+                viewModelScope.launch(Dispatchers.IO) {
+                    movieItemPressed = movieRepository.fetchMoviePoster(movie)
 
-                bitmap?.let {
-                    movieImageCache.saveBitmapToCache(imagePath, it)
-                }
+                    withContext(Dispatchers.Main) {
+                        _mainUiState.update {
+                            it.copy(
+                                isLoading = false,
+                                isInternetConnectionAvailable = true,
+                                movieItemPressed = movieItemPressed
+                            )
+                        }
+                    }
 
-            }
+                    val bitmap: Bitmap? = when (imagePath) {
+                        movie.posterImgPath -> movie.smallPosterImgBitmap
+                        else -> movie.largeBackdropImgBitmap
+                    }
+
+                    bitmap?.let {
+                        movieImageCache.saveBitmapToCache(imagePath, it)
+                    }
+                }
         }
 
     fun fetchMoreMovies() {
-        _inLoadingState.value = true
-        viewModelScope.launch {
+
+        _mainUiState.update {
+            it.copy(
+                isLoading = true,
+                isInternetConnectionAvailable = true,
+                moviesList = _moviesList.value
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
             movieRepository.fetchMovies()?.let { response ->
                 var movies: List<MovieModel> = response.results
                 movies = movieRepository.fetchMoviePosters(movies)
-                _moviesList.update {
-                    it + movies
+                withContext(Dispatchers.Main) {
+                    _mainUiState.update {
+                        it.copy(
+                            isLoading = false,
+                            isInternetConnectionAvailable = true,
+                            moviesList = _moviesList.value + movies
+                        )
+                    }
                 }
-                _inLoadingState.value = false
             }
         }
     }
