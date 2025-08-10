@@ -24,14 +24,6 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
     private val _mainUiState = MutableStateFlow(MainUiState())
     val mainUiState: StateFlow<MainUiState> = _mainUiState.asStateFlow()
 
-    private val _moviesList: MutableStateFlow<List<MovieModel>> = MutableStateFlow(listOf())
-    val moviesList: StateFlow<List<MovieModel>> = _moviesList
-
-    private val _inLoadingState: MutableStateFlow<Boolean> = MutableStateFlow(true)
-    val inLoadingState: StateFlow<Boolean> = _inLoadingState
-
-    private val _isInternetConnectionAvailable: MutableStateFlow<Boolean> = MutableStateFlow(true)
-
     var movieItemPressed: MovieModel? = null
 
     init {
@@ -120,7 +112,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             it.copy(
                 isLoading = true,
                 isInternetConnectionAvailable = true,
-                moviesList = _moviesList.value
+                moviesList = it.moviesList
             )
         }
 
@@ -133,7 +125,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                         it.copy(
                             isLoading = false,
                             isInternetConnectionAvailable = true,
-                            moviesList = _moviesList.value + movies
+                            moviesList = it.moviesList!! + movies
                         )
                     }
                 }
