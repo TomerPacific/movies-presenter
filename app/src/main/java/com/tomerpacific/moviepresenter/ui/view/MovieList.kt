@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,25 +45,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tomerpacific.moviepresenter.model.MainViewModel
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
 private const val APP_TITLE = "Movies Presenter"
 private const val itemIndexToShowScrollToTopButton: Int = 10
 
 @Composable
-fun MovieList(mainViewModel: MainViewModel,
-              onNavigateToMovieView: () -> Unit) {
-
+fun MovieList(
+    mainViewModel: MainViewModel,
+    onNavigateToMovieView: () -> Unit
+) {
     val mainUiState by mainViewModel.mainUiState.collectAsState()
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
-    val userReachedBottomOfColumn =
-        didUserReachBottomOfColumn(lazyListState = lazyListState, bufferFromBottom = 3)
 
-    LaunchedEffect(userReachedBottomOfColumn) {
-        if (userReachedBottomOfColumn) {
-            mainViewModel.fetchMoreMovies()
-        }
+    val shouldShowScrollToTopButton by remember {
+        derivedStateOf { lazyListState.firstVisibleItemIndex > 10 }
     }
 
     Scaffold(
@@ -87,41 +86,58 @@ fun MovieList(mainViewModel: MainViewModel,
                 )
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     state = lazyListState,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    when {
-                        mainUiState.isLoading || userReachedBottomOfColumn -> {
-                            item {
-                                CircularProgressBarIndicator()
-                            }
-                        }
+                    val movies = mainUiState.moviesList ?: emptyList()
 
-                        !mainUiState.isInternetConnectionAvailable -> {
-                            item {
-                                NetworkErrorText()
-                            }
-                        }
+                    items(
+                        items = movies,
+                        key = { it.movieId }
+                    ) { movie ->
+                        MovieCard(
+                            movie = movie,
+                            viewModel = mainViewModel,
+                            onNavigateToMovieView = onNavigateToMovieView
+                        )
+                    }
 
-                        mainUiState.moviesList?.isNotEmpty()!! -> {
-                            items(mainUiState.moviesList!!) { movie ->
-                                MovieCard(
-                                    movie = movie,
-                                    viewModel = mainViewModel,
-                                    onNavigateToMovieView = onNavigateToMovieView
-                                )
-                            }
+                    if (movies.isEmpty() && !mainUiState.isInternetConnectionAvailable) {
+                        item {
+                            NetworkErrorText()
+                        }
+                    }
+
+                    if (mainUiState.isLoading) {
+                        item {
+                            CircularProgressBarIndicator()
                         }
                     }
                 }
-                ScrollToTopButton(coroutineScope, listState = lazyListState)
+
+                LaunchedEffect(lazyListState, mainUiState.moviesList) {
+                    snapshotFlow {
+                        lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                    }
+                        .distinctUntilChanged()
+                        .collect { lastVisibleIndex ->
+                            val movies = mainUiState.moviesList
+                            if (!mainUiState.isLoading &&
+                                movies != null &&
+                                lastVisibleIndex != null &&
+                                lastVisibleIndex >= movies.lastIndex - 3
+                            ) {
+                                mainViewModel.fetchMoreMovies()
+                            }
+                        }
+                }
+
+                if (shouldShowScrollToTopButton) {
+                    ScrollToTopButton(coroutineScope, listState = lazyListState)
+                }
             }
         }
     }
@@ -132,25 +148,6 @@ fun NetworkErrorText() {
     Text(text = "There is no internet connection. Please check it and try again.",
         fontSize = 25.sp,
         textAlign = TextAlign.Center)
-}
-
-@Composable
-fun didUserReachBottomOfColumn(lazyListState: LazyListState, bufferFromBottom: Int): Boolean {
-    val isUserAtBottomOfColumn by remember {
-        derivedStateOf {
-            val layoutInfo = lazyListState.layoutInfo
-            val visibleItemsInfo = layoutInfo.visibleItemsInfo
-            if (layoutInfo.totalItemsCount <= 1) {
-                false
-            } else {
-                val lastVisibleItem = visibleItemsInfo.last()
-
-                lastVisibleItem.index >= layoutInfo.totalItemsCount - 1 - bufferFromBottom
-            }
-        }
-    }
-
-    return isUserAtBottomOfColumn
 }
 
 @Composable
