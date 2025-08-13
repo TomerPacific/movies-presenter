@@ -1,4 +1,4 @@
-package com.tomerpacific.moviepresenter.model
+package com.tomerpacific.moviepresenter.domain
 
 import android.graphics.Bitmap
 import kotlinx.serialization.SerialName

@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.tomerpacific.moviepresenter.cache.MovieImageCache
+import com.tomerpacific.moviepresenter.domain.MovieModel
 import com.tomerpacific.moviepresenter.network.NetworkConnectivityManager
 import com.tomerpacific.moviepresenter.repository.MovieRepositoryImpl
 import kotlinx.coroutines.Dispatchers
