@@ -1,6 +1,5 @@
-package com.tomerpacific.moviepresenter.model
+package com.tomerpacific.moviepresenter.domain.model
 
-import com.tomerpacific.moviepresenter.domain.model.MovieModel
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,7 +1,7 @@
 package com.tomerpacific.moviepresenter.domain.repository
 
 import com.tomerpacific.moviepresenter.domain.model.MovieModel
-import com.tomerpacific.moviepresenter.model.TMDBResponse
+import com.tomerpacific.moviepresenter.domain.model.TMDBResponse
 
 interface MovieRepository {
 
