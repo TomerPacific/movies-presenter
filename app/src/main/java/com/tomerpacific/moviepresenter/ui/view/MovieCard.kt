@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tomerpacific.moviepresenter.model.MainViewModel
-import com.tomerpacific.moviepresenter.domain.MovieModel
+import com.tomerpacific.moviepresenter.domain.model.MovieModel
 
 @Composable
 fun MovieCard(movie: MovieModel,
