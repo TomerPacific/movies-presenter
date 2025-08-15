@@ -3,7 +3,6 @@ package com.tomerpacific.moviepresenter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,15 +15,32 @@ import com.tomerpacific.moviepresenter.ui.theme.MoviePresenterTheme
 import com.tomerpacific.moviepresenter.ui.view.MovieView
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.lifecycle.ViewModelProvider
+import com.tomerpacific.moviepresenter.domain.repository.MovieRepositoryImpl
+import com.tomerpacific.moviepresenter.domain.usecase.GetMoviePosterUseCase
+import com.tomerpacific.moviepresenter.domain.usecase.GetMoviePostersUseCase
+import com.tomerpacific.moviepresenter.domain.usecase.GetMoviesUseCase
+import com.tomerpacific.moviepresenter.model.MainViewModelFactory
 import com.tomerpacific.moviepresenter.ui.view.MovieList
 
 class MainActivity : ComponentActivity() {
 
-    private val mainViewModel: MainViewModel by viewModels()
+    private lateinit var mainViewModel: MainViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val moviesRepositoryImpl = MovieRepositoryImpl()
+        val viewModelFactory = MainViewModelFactory(
+            application = application,
+            getMoviesUseCase = GetMoviesUseCase(moviesRepositoryImpl),
+            getMoviePostersUseCase = GetMoviePostersUseCase(moviesRepositoryImpl),
+            getMoviePosterUseCase = GetMoviePosterUseCase(moviesRepositoryImpl)
+        )
+
+        mainViewModel = ViewModelProvider(this, viewModelFactory)
+            .get(MainViewModel::class.java)
 
         setContent {
 
