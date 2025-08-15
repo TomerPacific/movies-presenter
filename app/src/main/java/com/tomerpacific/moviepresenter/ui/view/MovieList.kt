@@ -96,7 +96,7 @@ fun MovieList(
 
                     items(
                         items = movies,
-                        key = { it.movieId }
+                        key = { movie -> "${movie.movieId}_${movies.indexOf(movie)}" }
                     ) { movie ->
                         MovieCard(
                             movie = movie,
