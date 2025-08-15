@@ -6,8 +6,10 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.tomerpacific.moviepresenter.cache.MovieImageCache
 import com.tomerpacific.moviepresenter.domain.model.MovieModel
+import com.tomerpacific.moviepresenter.domain.usecase.GetMoviePosterUseCase
+import com.tomerpacific.moviepresenter.domain.usecase.GetMoviePostersUseCase
 import com.tomerpacific.moviepresenter.network.NetworkConnectivityManager
-import com.tomerpacific.moviepresenter.domain.repository.MovieRepositoryImpl
+import com.tomerpacific.moviepresenter.domain.usecase.GetMoviesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,9 +18,12 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel(application: Application): AndroidViewModel(application) {
+class MainViewModel(
+    application: Application,
+    private val getMoviesUseCase: GetMoviesUseCase,
+    private val getMoviePostersUseCase: GetMoviePostersUseCase,
+    private val getMoviePosterUseCase: GetMoviePosterUseCase): AndroidViewModel(application) {
 
-    private val movieRepository: MovieRepositoryImpl = MovieRepositoryImpl()
     private val networkConnectivityManager: NetworkConnectivityManager = NetworkConnectivityManager()
     private val movieImageCache: MovieImageCache = MovieImageCache()
 
@@ -39,17 +44,18 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
             }
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                movieRepository.fetchMovies()?.let { response ->
-                    var movies: List<MovieModel> = response.results
-                    movies = movieRepository.fetchMoviePosters(movies)
-
-                    withContext(Dispatchers.Main) {
-                        _mainUiState.update {
-                            it.copy(
-                                isLoading = false,
-                                isInternetConnectionAvailable = true,
-                                moviesList = movies
-                            )
+                getMoviesUseCase().let { response ->
+                    response?.let {
+                        var movies: List<MovieModel> = it.results
+                        movies = getMoviePostersUseCase(movies)
+                        withContext(Dispatchers.Main) {
+                            _mainUiState.update { state ->
+                                state.copy(
+                                    isLoading = false,
+                                    isInternetConnectionAvailable = true,
+                                    moviesList = movies
+                                )
+                            }
                         }
                     }
                 }
@@ -84,7 +90,7 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
                 }
             } ?:
                 viewModelScope.launch(Dispatchers.IO) {
-                    movieItemPressed = movieRepository.fetchMoviePoster(movie)
+                    movieItemPressed = getMoviePosterUseCase(movie)
 
                     withContext(Dispatchers.Main) {
                         _mainUiState.update {
@@ -118,9 +124,9 @@ class MainViewModel(application: Application): AndroidViewModel(application) {
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            movieRepository.fetchMovies()?.let { response ->
+            getMoviesUseCase()?.let { response ->
                 var movies: List<MovieModel> = response.results
-                movies = movieRepository.fetchMoviePosters(movies)
+                movies = getMoviePostersUseCase(movies)
                 withContext(Dispatchers.Main) {
                     _mainUiState.update {
                         it.copy(
