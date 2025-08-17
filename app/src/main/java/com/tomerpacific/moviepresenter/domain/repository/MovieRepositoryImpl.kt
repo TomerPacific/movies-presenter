@@ -71,7 +71,7 @@ class MovieRepositoryImpl: MovieRepository {
     }
 
     override suspend fun fetchMoviePoster(movie: MovieModel): MovieModel {
-        val posterUrl = movie.backdropImgPath
+        val posterUrl = movie.backdropImgPath ?: movie.posterImgPath
         val endpoint: String = MOVIE_POSTER_ENDPOINT +
                 MOVIE_POSTER_LARGE_SIZE +
                 posterUrl
