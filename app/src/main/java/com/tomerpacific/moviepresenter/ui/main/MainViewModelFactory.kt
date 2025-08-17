@@ -1,4 +1,4 @@
-package com.tomerpacific.moviepresenter.model
+package com.tomerpacific.moviepresenter.ui.main
 
 import android.app.Application
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.tomerpacific.moviepresenter.ui.view
+package com.tomerpacific.moviepresenter.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -41,7 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tomerpacific.moviepresenter.model.MainViewModel
+import com.tomerpacific.moviepresenter.ui.main.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch

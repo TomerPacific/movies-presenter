@@ -1,4 +1,4 @@
-package com.tomerpacific.moviepresenter.ui.view
+package com.tomerpacific.moviepresenter.ui.components
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -19,7 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tomerpacific.moviepresenter.Utils
-import com.tomerpacific.moviepresenter.model.MainViewModel
+import com.tomerpacific.moviepresenter.ui.main.MainViewModel
 
 @Composable
 fun MovieView(viewModel: MainViewModel) {
