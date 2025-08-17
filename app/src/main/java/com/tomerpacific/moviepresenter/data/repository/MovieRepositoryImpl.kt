@@ -1,9 +1,10 @@
-package com.tomerpacific.moviepresenter.domain.repository
+package com.tomerpacific.moviepresenter.data.repository
 
 import android.graphics.BitmapFactory
 import com.tomerpacific.moviepresenter.BuildConfig
 import com.tomerpacific.moviepresenter.domain.model.MovieModel
 import com.tomerpacific.moviepresenter.domain.model.TMDBResponse
+import com.tomerpacific.moviepresenter.domain.repository.MovieRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch

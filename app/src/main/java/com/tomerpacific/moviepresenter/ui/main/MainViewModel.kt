@@ -4,11 +4,11 @@ import android.app.Application
 import android.graphics.Bitmap
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.tomerpacific.moviepresenter.cache.MovieImageCache
+import com.tomerpacific.moviepresenter.data.local.MovieImageCache
 import com.tomerpacific.moviepresenter.domain.model.MovieModel
 import com.tomerpacific.moviepresenter.domain.usecase.GetMoviePosterUseCase
 import com.tomerpacific.moviepresenter.domain.usecase.GetMoviePostersUseCase
-import com.tomerpacific.moviepresenter.network.NetworkConnectivityManager
+import com.tomerpacific.moviepresenter.data.remote.NetworkConnectivityManager
 import com.tomerpacific.moviepresenter.domain.usecase.GetMoviesUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

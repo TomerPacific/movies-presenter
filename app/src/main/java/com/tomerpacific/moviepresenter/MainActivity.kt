@@ -16,7 +16,7 @@ import com.tomerpacific.moviepresenter.ui.components.MovieView
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.lifecycle.ViewModelProvider
-import com.tomerpacific.moviepresenter.domain.repository.MovieRepositoryImpl
+import com.tomerpacific.moviepresenter.data.repository.MovieRepositoryImpl
 import com.tomerpacific.moviepresenter.domain.usecase.GetMoviePosterUseCase
 import com.tomerpacific.moviepresenter.domain.usecase.GetMoviePostersUseCase
 import com.tomerpacific.moviepresenter.domain.usecase.GetMoviesUseCase
