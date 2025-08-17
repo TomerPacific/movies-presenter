@@ -61,7 +61,7 @@ fun MovieList(
     val coroutineScope = rememberCoroutineScope()
 
     val shouldShowScrollToTopButton by remember {
-        derivedStateOf { lazyListState.firstVisibleItemIndex > 10 }
+        derivedStateOf { lazyListState.firstVisibleItemIndex > itemIndexToShowScrollToTopButton }
     }
 
     Scaffold(
