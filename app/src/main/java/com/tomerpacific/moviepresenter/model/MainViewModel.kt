@@ -132,7 +132,7 @@ class MainViewModel(
                         it.copy(
                             isLoading = false,
                             isInternetConnectionAvailable = true,
-                            moviesList = it.moviesList!! + movies
+                            moviesList = (it.moviesList ?: emptyList()) + movies
                         )
                     }
                 }
