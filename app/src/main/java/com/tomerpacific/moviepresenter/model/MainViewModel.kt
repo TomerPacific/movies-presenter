@@ -30,8 +30,6 @@ class MainViewModel(
     private val _mainUiState = MutableStateFlow(MainUiState())
     val mainUiState: StateFlow<MainUiState> = _mainUiState.asStateFlow()
 
-    var movieItemPressed: MovieModel? = null
-
     init {
 
         if (!networkConnectivityManager.isNetworkConnected(application.applicationContext)) {
@@ -85,19 +83,19 @@ class MainViewModel(
 
             movieImageCache.getBitmapFromCache(imagePath)?.also { bitmap ->
                 when (imagePath) {
-                    movie.posterImgPath -> movieItemPressed!!.smallPosterImgBitmap = bitmap
-                    else -> movieItemPressed!!.largeBackdropImgBitmap = bitmap
+                    movie.posterImgPath -> movie.smallPosterImgBitmap = bitmap
+                    else -> movie.largeBackdropImgBitmap = bitmap
                 }
             } ?:
                 viewModelScope.launch(Dispatchers.IO) {
-                    movieItemPressed = getMoviePosterUseCase(movie)
+                    val updatedMovieWithPoster = getMoviePosterUseCase(movie)
 
                     withContext(Dispatchers.Main) {
                         _mainUiState.update {
                             it.copy(
                                 isLoading = false,
                                 isInternetConnectionAvailable = true,
-                                movieItemPressed = movieItemPressed
+                                movieItemPressed = updatedMovieWithPoster
                             )
                         }
                     }
