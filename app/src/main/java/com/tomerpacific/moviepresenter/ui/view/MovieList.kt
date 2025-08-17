@@ -152,7 +152,7 @@ fun NetworkErrorText() {
 fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) {
 
     AnimatedVisibility(
-        visible = shouldShowScrollToTopButton(listState),
+        visible = true,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
@@ -172,8 +172,4 @@ fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) 
             }
         }
     }
-}
-
-private fun shouldShowScrollToTopButton(listState: LazyListState): Boolean {
-    return listState.firstVisibleItemIndex >= itemIndexToShowScrollToTopButton
 }
