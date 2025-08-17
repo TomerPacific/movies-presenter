@@ -156,7 +156,7 @@ fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) 
         mutableStateOf(false)
     }
 
-    scrollToTopButtonVisibility = shouldShowScrollTopTopButton(listState)
+    scrollToTopButtonVisibility = shouldShowScrollToTopButton(listState)
 
     AnimatedVisibility(visible = scrollToTopButtonVisibility,
         enter = fadeIn(),
@@ -180,6 +180,6 @@ fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) 
     }
 }
 
-private fun shouldShowScrollTopTopButton(listState: LazyListState): Boolean {
+private fun shouldShowScrollToTopButton(listState: LazyListState): Boolean {
     return listState.firstVisibleItemIndex >= itemIndexToShowScrollToTopButton
 }
