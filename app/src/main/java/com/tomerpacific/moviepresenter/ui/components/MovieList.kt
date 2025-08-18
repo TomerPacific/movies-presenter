@@ -133,9 +133,7 @@ fun MovieList(
                         }
                 }
 
-                if (shouldShowScrollToTopButton) {
-                    ScrollToTopButton(coroutineScope, listState = lazyListState)
-                }
+                ScrollToTopButton(coroutineScope, shouldShowScrollToTopButton, lazyListState)
             }
         }
     }
@@ -149,10 +147,12 @@ fun NetworkErrorText() {
 }
 
 @Composable
-fun ScrollToTopButton(coroutineScope: CoroutineScope, listState: LazyListState) {
+fun ScrollToTopButton(coroutineScope: CoroutineScope,
+                      shouldShowScrollToTopButton: Boolean,
+                      listState: LazyListState) {
 
     AnimatedVisibility(
-        visible = true,
+        visible = shouldShowScrollToTopButton,
         enter = fadeIn(),
         exit = fadeOut()
     ) {
