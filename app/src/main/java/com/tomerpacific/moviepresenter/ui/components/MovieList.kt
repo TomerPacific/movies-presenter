@@ -62,8 +62,6 @@ fun MovieList(
         derivedStateOf { lazyListState.firstVisibleItemIndex > itemIndexToShowScrollToTopButton }
     }
 
-    var uniqueMovieIndex = 0
-
     Scaffold(
         contentWindowInsets = WindowInsets.safeContent
     ) { innerPadding ->
@@ -96,7 +94,7 @@ fun MovieList(
 
                     items(
                         items = movies,
-                        key = { movie -> "${movie.movieId}_${uniqueMovieIndex++}" }
+                        key =  { it.hashCode() }
                     ) { movie ->
                         MovieCard(
                             movie = movie,
