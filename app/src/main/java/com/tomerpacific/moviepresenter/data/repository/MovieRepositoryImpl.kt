@@ -1,9 +1,10 @@
-package com.tomerpacific.moviepresenter.repository
+package com.tomerpacific.moviepresenter.data.repository
 
 import android.graphics.BitmapFactory
 import com.tomerpacific.moviepresenter.BuildConfig
-import com.tomerpacific.moviepresenter.model.MovieModel
-import com.tomerpacific.moviepresenter.model.TMDBResponse
+import com.tomerpacific.moviepresenter.domain.model.MovieModel
+import com.tomerpacific.moviepresenter.domain.model.TMDBResponse
+import com.tomerpacific.moviepresenter.domain.repository.MovieRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -71,7 +72,7 @@ class MovieRepositoryImpl: MovieRepository {
     }
 
     override suspend fun fetchMoviePoster(movie: MovieModel): MovieModel {
-        val posterUrl = movie.backdropImgPath
+        val posterUrl = movie.backdropImgPath ?: movie.posterImgPath
         val endpoint: String = MOVIE_POSTER_ENDPOINT +
                 MOVIE_POSTER_LARGE_SIZE +
                 posterUrl

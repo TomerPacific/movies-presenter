@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.activity.compose)
     implementation(libs.kotlinx.serialization)
     implementation(libs.navigation.compose)
+    implementation(libs.compose.runtime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.test.ext.junit)

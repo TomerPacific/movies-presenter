@@ -1,4 +1,4 @@
-package com.tomerpacific.moviepresenter.cache
+package com.tomerpacific.moviepresenter.data.local
 
 import android.graphics.Bitmap
 import android.util.LruCache

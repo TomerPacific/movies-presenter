@@ -1,4 +1,4 @@
-package com.tomerpacific.moviepresenter.network
+package com.tomerpacific.moviepresenter.data.remote
 
 import android.content.Context
 import android.net.ConnectivityManager
